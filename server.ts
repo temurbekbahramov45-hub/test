@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const products = req.body;
-      await writeFile('public/db/db.json', JSON.stringify(products, null, 2));
+      await writeFile('publicdb/db.json', JSON.stringify(products, null, 2));
       res.status(200).json({ message: 'Products saved' });
     } catch (error) {
       res.status(500).json({ error: 'Failed to save products' });
