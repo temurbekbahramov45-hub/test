@@ -20,6 +20,7 @@ interface Product {
   image?: string;
   category: string;
   discount?: number;
+  description?: string;
 }
 
 interface CartItem {
@@ -63,7 +64,7 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/api/products");
+        const response = await fetch("/db/db.json");
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
@@ -204,7 +205,7 @@ export default function Home() {
   const getTotalPrice = () => {
     return cart.reduce((total, item) => {
       const price = item.product.discount
-        ? item.product.price * (1 - item.product.discount / 100)
+        ? item.product.price * (1 - (item.product.discount / 100))
         : item.product.price;
       return total + price * item.quantity;
     }, 0);
@@ -231,11 +232,11 @@ ${cart
     (item) =>
       `${language === "uz" ? item.product.nameUz : item.product.nameRu} — ${item.quantity} x ${(
         item.product.discount
-          ? item.product.price * (1 - item.product.discount / 100)
+          ? item.product.price * (1 - (item.product.discount / 100))
           : item.product.price
       ).toLocaleString()} so'm = ${(
         (item.product.discount
-          ? item.product.price * (1 - item.product.discount / 100)
+          ? item.product.price * (1 - (item.product.discount / 100))
           : item.product.price) * item.quantity
       ).toLocaleString()} so'm`
   )
@@ -311,38 +312,40 @@ ${cart
         image: newProduct.image,
         discount: newProduct.hasDiscount ? newProduct.discount : 0,
       };
+      const updatedProducts = [...products, product];
+      setProducts(updatedProducts);
+      // Note: Direct file writes to db.json are not possible in client-side code.
+      // To save to db.json, you need a server-side API or Server Action.
+      /*
       try {
-        const response = await fetch("/api/products", {
+        await fetch("/api/save-products", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(product),
-        });
-        if (!response.ok) {
-          throw new Error("Failed to add product");
-        }
-        setProducts([...products, product]);
-        setNewProduct({
-          nameUz: "",
-          nameRu: "",
-          description: "",
-          price: 0,
-          category: "",
-          image: "",
-          discount: 0,
-          hasDiscount: false,
-        });
-        setShowAddProduct(false);
-        toast({
-          title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-          description: language === "uz" ? "Mahsulot qo'shildi va asosiy sahifada ko'rinadi" : "Товар добавлен и виден на главной странице",
+          body: JSON.stringify(updatedProducts),
         });
       } catch (error) {
         toast({
           title: language === "uz" ? "Xatolik" : "Ошибка",
-          description: language === "uz" ? "Mahsulot qo'shilmadi" : "Товар не добавлен",
+          description: language === "uz" ? "Mahsulot saqlanmadi" : "Товар не сохранен",
           variant: "destructive",
         });
       }
+      */
+      setNewProduct({
+        nameUz: "",
+        nameRu: "",
+        description: "",
+        price: 0,
+        category: "",
+        image: "",
+        discount: 0,
+        hasDiscount: false,
+      });
+      setShowAddProduct(false);
+      toast({
+        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+        description: language === "uz" ? "Mahsulot qo'shildi va asosiy sahifada ko'rinadi" : "Товар добавлен и виден на главной странице",
+      });
     }
   };
 
@@ -358,30 +361,17 @@ ${cart
         image: newProduct.image,
         discount: newProduct.hasDiscount ? newProduct.discount : 0,
       };
+      
+      const updatedProducts = products.map(p => p.id === editingProduct.id ? updatedProduct : p);
+      setProducts(updatedProducts);
+      // Note: Direct file writes to db.json are not possible in client-side code.
+      // To save to db.json, you need a server-side API or Server Action.
+      /*
       try {
-        const response = await fetch("/api/products", {
-          method: "PUT",
+        await fetch("/api/save-products", {
+          method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedProduct),
-        });
-        if (!response.ok) {
-          throw new Error("Failed to edit product");
-        }
-        setProducts(products.map((p) => (p.id === editingProduct.id ? updatedProduct : p)));
-        setEditingProduct(null);
-        setNewProduct({
-          nameUz: "",
-          nameRu: "",
-          description: "",
-          price: 0,
-          category: "",
-          image: "",
-          discount: 0,
-          hasDiscount: false,
-        });
-        toast({
-          title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-          description: language === "uz" ? "Mahsulot yangilandi" : "Товар обновлен",
+          body: JSON.stringify(updatedProducts),
         });
       } catch (error) {
         toast({
@@ -390,23 +380,36 @@ ${cart
           variant: "destructive",
         });
       }
+      */
+      setEditingProduct(null);
+      setNewProduct({
+        nameUz: "",
+        nameRu: "",
+        description: "",
+        price: 0,
+        category: "",
+        image: "",
+        discount: 0,
+        hasDiscount: false,
+      });
+      toast({
+        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+        description: language === "uz" ? "Mahsulot yangilandi" : "Товар обновлен",
+      });
     }
   };
 
   const handleDeleteProduct = async (productId: string) => {
+    const updatedProducts = products.filter((p) => p.id !== productId);
+    setProducts(updatedProducts);
+    // Note: Direct file writes to db.json are not possible in client-side code.
+    // To save to db.json, you need a server-side API or Server Action.
+    /*
     try {
-      const response = await fetch("/api/products", {
-        method: "DELETE",
+      await fetch("/api/save-products", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: productId }),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to delete product");
-      }
-      setProducts(products.filter((p) => p.id !== productId));
-      toast({
-        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-        description: language === "uz" ? "Mahsulot o'chirildi" : "Товар удален",
+        body: JSON.stringify(updatedProducts),
       });
     } catch (error) {
       toast({
@@ -415,6 +418,11 @@ ${cart
         variant: "destructive",
       });
     }
+    */
+    toast({
+      title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+      description: language === "uz" ? "Mahsulot o'chirildi" : "Товар удален",
+    });
   };
 
   const groupedProducts = products.reduce((acc, product) => {
@@ -427,7 +435,6 @@ ${cart
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-white shadow-md">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -440,7 +447,6 @@ ${cart
               <h1 className="text-3xl font-bold text-orange-600">{t.title}</h1>
             </div>
             <div className="flex items-center gap-4">
-              {/* Cart Button */}
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="outline" size="sm" className="relative">
@@ -453,12 +459,9 @@ ${cart
                     )}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-lg" aria-describedby="cart-dialog-description">
+                <DialogContent className="max-w-lg">
                   <DialogHeader>
-                    <DialogTitle id="cart-dialog-title">{language === "uz" ? "Savatdagi mahsulotlar" : "Товары в корзине"}</DialogTitle>
-                    <span id="cart-dialog-description" className="sr-only">
-                      {language === "uz" ? "Savatdagi mahsulotlar ro'yxati va buyurtma ma'lumotlari" : "Список товаров в корзине и детали заказа"}
-                    </span>
+                    <DialogTitle>{language === "uz" ? "Savatdagi mahsulotlar" : "Товары в корзине"}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     {cart.length === 0 ? (
@@ -470,7 +473,7 @@ ${cart
                         <div className="max-h-64 overflow-y-auto space-y-3">
                           {cart.map((item) => {
                             const discountedPrice = item.product.discount
-                              ? item.product.price * (1 - item.product.discount / 100)
+                              ? item.product.price * (1 - (item.product.discount / 100))
                               : item.product.price;
                             
                             return (
@@ -480,7 +483,7 @@ ${cart
                                     {language === "uz" ? item.product.nameUz : item.product.nameRu}
                                   </h4>
                                   <div className="flex items-center gap-2">
-                                    {item.product.discount > 0 && (
+                                    {item.product.discount ? (
                                       <>
                                         <span className="text-sm text-gray-500 line-through">
                                           {item.product.price.toLocaleString()} so'm
@@ -489,7 +492,7 @@ ${cart
                                           -{item.product.discount}%
                                         </Badge>
                                       </>
-                                    )}
+                                    ) : null}
                                     <span className="font-bold text-orange-600">
                                       {discountedPrice.toLocaleString()} so'm
                                     </span>
@@ -516,8 +519,6 @@ ${cart
                           })}
                         </div>
                         <Separator />
-                        
-                        {/* Order Details */}
                         <div className="space-y-4">
                           <div>
                             <Label className="text-base font-medium">
@@ -536,7 +537,6 @@ ${cart
                               type="tel"
                             />
                           </div>
-
                           <div>
                             <Label className="text-base font-medium">
                               {t.deliveryAddress}
@@ -552,7 +552,6 @@ ${cart
                               className="mt-1"
                             />
                           </div>
-
                           <div>
                             <Label className="text-base font-medium">
                               {t.paymentMethod}
@@ -580,7 +579,6 @@ ${cart
                             )}
                           </div>
                         </div>
-
                         <Separator />
                         <div className="flex items-center justify-between font-bold text-lg">
                           <span>{t.totalPrice}</span>
@@ -606,7 +604,6 @@ ${cart
                   </div>
                 </DialogContent>
               </Dialog>
-
               <div className="flex bg-gray-100 rounded-full p-1">
                 <button
                   onClick={() => setLanguage("uz")}
@@ -636,12 +633,9 @@ ${cart
                     {t.admin}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md" aria-describedby="admin-dialog-description">
+                <DialogContent className="max-w-md">
                   <DialogHeader>
-                    <DialogTitle id="admin-dialog-title">{t.admin}</DialogTitle>
-                    <span id="admin-dialog-description" className="sr-only">
-                      {language === "uz" ? "Admin paneliga kirish yoki mahsulotlarni boshqarish" : "Вход в админ-панель или управление товарами"}
-                    </span>
+                    <DialogTitle>{t.admin}</DialogTitle>
                   </DialogHeader>
                   {!isAdminLoggedIn ? (
                     <div className="space-y-4">
@@ -704,11 +698,11 @@ ${cart
                                 <span className="text-sm font-medium">
                                   {product.price.toLocaleString()} so'm
                                 </span>
-                                {product.discount > 0 && (
+                                {product.discount ? (
                                   <Badge variant="destructive" className="text-xs">
                                     -{product.discount}%
                                   </Badge>
-                                )}
+                                ) : null}
                               </div>
                               <div className="text-xs text-gray-500">
                                 {t.categories[product.category as keyof typeof t.categories] || product.category}
@@ -753,10 +747,7 @@ ${cart
           </div>
         </div>
       </header>
-
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        {/* Product Catalog */}
         <div className="space-y-8">
           {Object.entries(groupedProducts).map(([category, categoryProducts]) => (
             <div key={category}>
@@ -767,7 +758,7 @@ ${cart
                 {categoryProducts.map((product) => {
                   const quantityInCart = getQuantityInCart(product.id);
                   const discountedPrice = product.discount
-                    ? product.price * (1 - product.discount / 100)
+                    ? product.price * (1 - (product.discount / 100))
                     : product.price;
 
                   return (
@@ -802,7 +793,7 @@ ${cart
                           </p>
                         )}
                         <div className="flex items-center gap-2 mb-4">
-                          {product.discount > 0 && (
+                          {product.discount ? (
                             <>
                               <span className="text-sm text-gray-500 line-through">
                                 {product.price.toLocaleString()} so'm
@@ -811,7 +802,7 @@ ${cart
                                 -{product.discount}%
                               </Badge>
                             </>
-                          )}
+                          ) : null}
                           <span className="text-lg font-bold text-orange-600">
                             {discountedPrice.toLocaleString()} so'm
                           </span>
@@ -842,8 +833,6 @@ ${cart
           ))}
         </div>
       </main>
-
-      {/* Add/Edit Product Dialog */}
       <Dialog open={showAddProduct || editingProduct !== null} onOpenChange={(open) => {
         if (!open) {
           setShowAddProduct(false);
@@ -860,12 +849,9 @@ ${cart
           });
         }
       }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" aria-describedby="product-dialog-description">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle id="product-dialog-title">{editingProduct ? (language === "uz" ? "Mahsulotni tahrirlash" : "Редактировать товар") : t.addProduct}</DialogTitle>
-            <span id="product-dialog-description" className="sr-only">
-              {language === "uz" ? "Yangi mahsulot qo'shish yoki mavjud mahsulotni tahrirlash" : "Добавление нового товара или редактирование существующего"}
-            </span>
+            <DialogTitle>{editingProduct ? (language === "uz" ? "Mahsulotni tahrirlash" : "Редактировать товар") : t.addProduct}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -892,7 +878,6 @@ ${cart
                 />
               </div>
             </div>
-
             <div>
               <Label htmlFor="description">{language === "uz" ? "Mahsulot tavsifi" : "Описание товара"}</Label>
               <Input
@@ -904,7 +889,6 @@ ${cart
                 placeholder={language === "uz" ? "Mahsulot haqida qisqacha ma'lumot" : "Краткое описание товара"}
               />
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="price">{t.productPrice}</Label>
@@ -935,7 +919,6 @@ ${cart
                 />
               </div>
             </div>
-
             <div>
               <Label htmlFor="image">{language === "uz" ? "Rasm URL" : "URL изображения"}</Label>
               <Input
@@ -947,7 +930,6 @@ ${cart
                 placeholder={language === "uz" ? "Rasm havolasi (ixtiyoriy)" : "URL изображения (необязательно)"}
               />
             </div>
-
             <div>
               <Label>{t.hasDiscount}</Label>
               <RadioGroup
@@ -989,7 +971,6 @@ ${cart
                 </div>
               )}
             </div>
-
             <div className="flex gap-2">
               <Button 
                 onClick={editingProduct ? handleEditProduct : handleAddProduct} 

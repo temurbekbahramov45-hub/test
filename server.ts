@@ -1,48 +1,17 @@
-import { setupSocket } from '@/lib/socket';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import next from 'next';
+// pages/api/save-products.ts
+import { writeFile } from 'fs/promises';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-const dev = process.env.NODE_ENV !== 'production';
-const currentPort = 3000;
-const hostname = '0.0.0.0';
-
-async function createCustomServer() {
-  try {
-    const nextApp = next({ 
-      dev,
-      dir: process.cwd(),
-      conf: dev ? undefined : { distDir: './.next' }
-    });
-
-    await nextApp.prepare();
-    const handle = nextApp.getRequestHandler();
-
-    const server = createServer((req, res) => {
-      if (req.url?.startsWith('/api/socketio')) {
-        return;
-      }
-      handle(req, res);
-    });
-
-    const io = new Server(server, {
-      path: '/api/socketio',
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-      }
-    });
-
-    setupSocket(io);
-
-    server.listen(currentPort, hostname, () => {
-      console.log(`> Ready on http://${hostname}:${currentPort}`);
-      console.log(`> Socket.IO server running at ws://${hostname}:${currentPort}/api/socketio`);
-    });
-  } catch (err) {
-    console.error('Server startup error:', err);
-    process.exit(1);
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'POST') {
+    try {
+      const products = req.body;
+      await writeFile('public/db/db.json', JSON.stringify(products, null, 2));
+      res.status(200).json({ message: 'Products saved' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to save products' });
+    }
+  } else {
+    res.status(405).json({ error: 'Method not allowed' });
   }
 }
-
-createCustomServer();
