@@ -453,9 +453,12 @@ ${cart
                     )}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-lg">
+                <DialogContent className="max-w-lg" aria-describedby="cart-dialog-description">
                   <DialogHeader>
-                    <DialogTitle>{language === "uz" ? "Savatdagi mahsulotlar" : "Товары в корзине"}</DialogTitle>
+                    <DialogTitle id="cart-dialog-title">{language === "uz" ? "Savatdagi mahsulotlar" : "Товары в корзине"}</DialogTitle>
+                    <span id="cart-dialog-description" className="sr-only">
+                      {language === "uz" ? "Savatdagi mahsulotlar ro'yxati va buyurtma ma'lumotlari" : "Список товаров в корзине и детали заказа"}
+                    </span>
                   </DialogHeader>
                   <div className="space-y-4">
                     {cart.length === 0 ? (
@@ -633,9 +636,12 @@ ${cart
                     {t.admin}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-md" aria-describedby="admin-dialog-description">
                   <DialogHeader>
-                    <DialogTitle>{t.admin}</DialogTitle>
+                    <DialogTitle id="admin-dialog-title">{t.admin}</DialogTitle>
+                    <span id="admin-dialog-description" className="sr-only">
+                      {language === "uz" ? "Admin paneliga kirish yoki mahsulotlarni boshqarish" : "Вход в админ-панель или управление товарами"}
+                    </span>
                   </DialogHeader>
                   {!isAdminLoggedIn ? (
                     <div className="space-y-4">
@@ -854,9 +860,12 @@ ${cart
           });
         }
       }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" aria-describedby="product-dialog-description">
           <DialogHeader>
-            <DialogTitle>{editingProduct ? (language === "uz" ? "Mahsulotni tahrirlash" : "Редактировать товар") : t.addProduct}</DialogTitle>
+            <DialogTitle id="product-dialog-title">{editingProduct ? (language === "uz" ? "Mahsulotni tahrirlash" : "Редактировать товар") : t.addProduct}</DialogTitle>
+            <span id="product-dialog-description" className="sr-only">
+              {language === "uz" ? "Yangi mahsulot qo'shish yoki mavjud mahsulotni tahrirlash" : "Добавление нового товара или редактирование существующего"}
+            </span>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
