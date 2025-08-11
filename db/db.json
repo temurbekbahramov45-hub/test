@@ -1,0 +1,6 @@
+{
+  "products": [
+    { "id": "1", "nameUz": "Hotdog 5 tasi 1 da", "price": 25000 },
+    { "id": "2", "nameUz": "Hotdog 5 tasi 1 da (Big)", "price": 35000 }
+  ]
+}
