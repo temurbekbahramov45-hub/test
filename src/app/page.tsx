@@ -64,7 +64,7 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("public/db/db.json"); // Updated to match public directory structure
+        const response = await fetch("src/app/db.json"); // Updated to match public directory structure
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
