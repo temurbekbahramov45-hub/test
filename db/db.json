@@ -1,6 +1,18 @@
-{
-  "products": [
-    { "id": "1", "nameUz": "Hotdog 5 tasi 1 da", "price": 25000 },
-    { "id": "2", "nameUz": "Hotdog 5 tasi 1 da (Big)", "price": 35000 }
-  ]
-}
+[
+  {
+    "id": "1",
+    "nameUz": "Hotdog 5 tasi 1 da",
+    "nameRu": "Хотдог 5 штук 1 шт",
+    "price": 25000,
+    "category": "Hotdog",
+    "discount": 0
+  },
+  {
+    "id": "2",
+    "nameUz": "Hotdog 5 tasi 1 da (Big)",
+    "nameRu": "Хотдог 5 штук 1 шт (Большой)",
+    "price": 35000,
+    "category": "Hotdog",
+    "discount": 0
+  }
+]
