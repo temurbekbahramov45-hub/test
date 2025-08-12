@@ -20,7 +20,7 @@ interface Product {
   image?: string;
   category: string;
   discount?: number;
-  description?: string;
+  description?: string; // Add this line
 }
 
 interface CartItem {
@@ -58,29 +58,36 @@ export default function Home() {
     hasDiscount: false,
   });
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const { toast } = useToast();
 
+  // Fetch products from the backend API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("src/app/db.json"); // Updated to match public directory structure
+        setLoading(true);
+        const response = await fetch("/api/products");
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
         const data: Product[] = await response.json();
         setProducts(data);
-      } catch (error) {
+      } catch (err) {
+        setError(language === "uz" ? "Mahsulotlarni yuklashda xatolik" : "Ошибка при загрузке товаров");
         toast({
           title: language === "uz" ? "Xatolik" : "Ошибка",
-          description: language === "uz" ? "Mahsulotlarni yuklashda xato yuz berdi" : "Ошибка при загрузке товаров",
+          description: language === "uz" ? "Mahsulotlarni yuklashda xatolik" : "Ошибка при загрузке товаров",
           variant: "destructive",
         });
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [language, toast]);
+  }, []);
 
   const texts = {
     uz: {
@@ -113,6 +120,7 @@ export default function Home() {
       cancel: "Bekor qilish",
       edit: "Tahrirlash",
       delete: "O'chirish",
+      loading: "Yuklanmoqda...",
       categories: {
         Hotdog: "Hotdog",
         Burger: "Burger",
@@ -153,6 +161,7 @@ export default function Home() {
       cancel: "Отмена",
       edit: "Редактировать",
       delete: "Удалить",
+      loading: "Загрузка...",
       categories: {
         Hotdog: "Хотдог",
         Burger: "Бургер",
@@ -205,7 +214,7 @@ export default function Home() {
   const getTotalPrice = () => {
     return cart.reduce((total, item) => {
       const price = item.product.discount
-        ? item.product.price * (1 - (item.product.discount / 100))
+        ? item.product.price * (1 - item.product.discount / 100)
         : item.product.price;
       return total + price * item.quantity;
     }, 0);
@@ -232,11 +241,11 @@ ${cart
     (item) =>
       `${language === "uz" ? item.product.nameUz : item.product.nameRu} — ${item.quantity} x ${(
         item.product.discount
-          ? item.product.price * (1 - (item.product.discount / 100))
+          ? item.product.price * (1 - item.product.discount / 100)
           : item.product.price
       ).toLocaleString()} so'm = ${(
         (item.product.discount
-          ? item.product.price * (1 - (item.product.discount / 100))
+          ? item.product.price * (1 - item.product.discount / 100)
           : item.product.price) * item.quantity
       ).toLocaleString()} so'm`
   )
@@ -303,7 +312,7 @@ ${cart
   const handleAddProduct = async () => {
     if (newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
       const product: Product = {
-        id: Date.now().toString(),
+        id: Date.now().toString(), // Note: Backend should generate ID
         nameUz: newProduct.nameUz,
         nameRu: newProduct.nameRu,
         description: newProduct.description,
@@ -312,40 +321,44 @@ ${cart
         image: newProduct.image,
         discount: newProduct.hasDiscount ? newProduct.discount : 0,
       };
-      const updatedProducts = [...products, product];
-      setProducts(updatedProducts);
-      // Note: Direct file writes to db.json are not possible in client-side code.
-      // To save to db.json, you need a server-side API or Server Action.
-      /*
+
       try {
-        await fetch("/api/save-products", {
+        const response = await fetch("/api/products", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedProducts),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(product),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to add product");
+        }
+
+        const savedProduct: Product = await response.json();
+        setProducts([...products, savedProduct]);
+        setNewProduct({
+          nameUz: "",
+          nameRu: "",
+          description: "",
+          price: 0,
+          category: "",
+          image: "",
+          discount: 0,
+          hasDiscount: false,
+        });
+        setShowAddProduct(false);
+        toast({
+          title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+          description: language === "uz" ? "Mahsulot qo'shildi" : "Товар добавлен",
         });
       } catch (error) {
         toast({
           title: language === "uz" ? "Xatolik" : "Ошибка",
-          description: language === "uz" ? "Mahsulot saqlanmadi" : "Товар не сохранен",
+          description: language === "uz" ? "Mahsulot qo'shilmadi" : "Товар не добавлен",
           variant: "destructive",
         });
       }
-      */
-      setNewProduct({
-        nameUz: "",
-        nameRu: "",
-        description: "",
-        price: 0,
-        category: "",
-        image: "",
-        discount: 0,
-        hasDiscount: false,
-      });
-      setShowAddProduct(false);
-      toast({
-        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-        description: language === "uz" ? "Mahsulot qo'shildi va asosiy sahifada ko'rinadi" : "Товар добавлен и виден на главной странице",
-      });
     }
   };
 
@@ -361,17 +374,35 @@ ${cart
         image: newProduct.image,
         discount: newProduct.hasDiscount ? newProduct.discount : 0,
       };
-      
-      const updatedProducts = products.map(p => p.id === editingProduct.id ? updatedProduct : p);
-      setProducts(updatedProducts);
-      // Note: Direct file writes to db.json are not possible in client-side code.
-      // To save to db.json, you need a server-side API or Server Action.
-      /*
+
       try {
-        await fetch("/api/save-products", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedProducts),
+        const response = await fetch(`/api/products/${editingProduct.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedProduct),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to update product");
+        }
+
+        setProducts(products.map((p) => (p.id === editingProduct.id ? updatedProduct : p)));
+        setEditingProduct(null);
+        setNewProduct({
+          nameUz: "",
+          nameRu: "",
+          description: "",
+          price: 0,
+          category: "",
+          image: "",
+          discount: 0,
+          hasDiscount: false,
+        });
+        toast({
+          title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+          description: language === "uz" ? "Mahsulot yangilandi" : "Товар обновлен",
         });
       } catch (error) {
         toast({
@@ -380,36 +411,23 @@ ${cart
           variant: "destructive",
         });
       }
-      */
-      setEditingProduct(null);
-      setNewProduct({
-        nameUz: "",
-        nameRu: "",
-        description: "",
-        price: 0,
-        category: "",
-        image: "",
-        discount: 0,
-        hasDiscount: false,
-      });
-      toast({
-        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-        description: language === "uz" ? "Mahsulot yangilandi" : "Товар обновлен",
-      });
     }
   };
 
   const handleDeleteProduct = async (productId: string) => {
-    const updatedProducts = products.filter((p) => p.id !== productId);
-    setProducts(updatedProducts);
-    // Note: Direct file writes to db.json are not possible in client-side code.
-    // To save to db.json, you need a server-side API or Server Action.
-    /*
     try {
-      await fetch("/api/save-products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedProducts),
+      const response = await fetch(`/api/products/${productId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
+
+      setProducts(products.filter((p) => p.id !== productId));
+      toast({
+        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+        description: language === "uz" ? "Mahsulot o'chirildi" : "Товар удален",
       });
     } catch (error) {
       toast({
@@ -418,11 +436,6 @@ ${cart
         variant: "destructive",
       });
     }
-    */
-    toast({
-      title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-      description: language === "uz" ? "Mahsulot o'chirildi" : "Товар удален",
-    });
   };
 
   const groupedProducts = products.reduce((acc, product) => {
@@ -433,8 +446,25 @@ ${cart
     return acc;
   }, {} as Record<string, Product[]>);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-red-50">
+        <p className="text-lg font-medium text-gray-600">{t.loading}</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-red-50">
+        <p className="text-lg font-medium text-red-600">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+      {/* Header */}
       <header className="sticky top-0 z-50 bg-white shadow-md">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -473,9 +503,9 @@ ${cart
                         <div className="max-h-64 overflow-y-auto space-y-3">
                           {cart.map((item) => {
                             const discountedPrice = item.product.discount
-                              ? item.product.price * (1 - (item.product.discount / 100))
+                              ? item.product.price * (1 - item.product.discount / 100)
                               : item.product.price;
-                            
+
                             return (
                               <div key={item.product.id} className="flex items-center justify-between p-3 border rounded-lg">
                                 <div className="flex-1">
@@ -483,16 +513,16 @@ ${cart
                                     {language === "uz" ? item.product.nameUz : item.product.nameRu}
                                   </h4>
                                   <div className="flex items-center gap-2">
-                                    {item.product.discount ? (
-                                      <>
-                                        <span className="text-sm text-gray-500 line-through">
-                                          {item.product.price.toLocaleString()} so'm
-                                        </span>
-                                        <Badge variant="destructive" className="text-xs">
-                                          -{item.product.discount}%
-                                        </Badge>
-                                      </>
-                                    ) : null}
+                                    {item.product.discount !== undefined && item.product.discount > 0 && (
+                                    <>
+                                      <span className="text-sm text-gray-500 line-through">
+                                        {item.product.price.toLocaleString()} so'm
+                                      </span>
+                                      <Badge variant="destructive" className="text-xs">
+                                        -{item.product.discount}%
+                                      </Badge>
+                                    </>
+                                  )}
                                     <span className="font-bold text-orange-600">
                                       {discountedPrice.toLocaleString()} so'm
                                     </span>
@@ -586,7 +616,7 @@ ${cart
                             {getTotalPrice().toLocaleString()} so'm
                           </span>
                         </div>
-                        <Button 
+                        <Button
                           onClick={handlePlaceOrder}
                           disabled={cart.length === 0 || isOrderPlaced}
                           className="w-full mt-4"
@@ -698,11 +728,12 @@ ${cart
                                 <span className="text-sm font-medium">
                                   {product.price.toLocaleString()} so'm
                                 </span>
-                                {product.discount ? (
-                                  <Badge variant="destructive" className="text-xs">
-                                    -{product.discount}%
-                                  </Badge>
-                                ) : null}
+                                {(product.discount ?? 0) > 0 && (
+                                <Badge variant="destructive" className="text-xs">
+                                  -{product.discount ?? 0}%
+                                </Badge>
+                              )}
+
                               </div>
                               <div className="text-xs text-gray-500">
                                 {t.categories[product.category as keyof typeof t.categories] || product.category}
@@ -747,6 +778,7 @@ ${cart
           </div>
         </div>
       </header>
+
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           {Object.entries(groupedProducts).map(([category, categoryProducts]) => (
@@ -758,7 +790,7 @@ ${cart
                 {categoryProducts.map((product) => {
                   const quantityInCart = getQuantityInCart(product.id);
                   const discountedPrice = product.discount
-                    ? product.price * (1 - (product.discount / 100))
+                    ? product.price * (1 - product.discount / 100)
                     : product.price;
 
                   return (
@@ -775,7 +807,7 @@ ${cart
                               className="w-full h-full object-cover"
                               onError={(e) => {
                                 e.currentTarget.style.display = 'none';
-                                e.currentTarget.parentElement!.innerHTML = `<div className="text-gray-400 text-sm">${language === "uz" ? "Rasm" : "Фото"}</div>`;
+                                e.currentTarget.parentElement!.innerHTML = `<div class="text-gray-400 text-sm">${language === "uz" ? "Rasm" : "Фото"}</div>`;
                               }}
                             />
                           ) : (
@@ -793,16 +825,17 @@ ${cart
                           </p>
                         )}
                         <div className="flex items-center gap-2 mb-4">
-                          {product.discount ? (
+                         {(product.discount ?? 0) > 0 && (
                             <>
                               <span className="text-sm text-gray-500 line-through">
                                 {product.price.toLocaleString()} so'm
                               </span>
                               <Badge variant="destructive" className="text-xs">
-                                -{product.discount}%
+                                -{product.discount ?? 0}%
                               </Badge>
                             </>
-                          ) : null}
+                          )}
+
                           <span className="text-lg font-bold text-orange-600">
                             {discountedPrice.toLocaleString()} so'm
                           </span>
@@ -833,6 +866,7 @@ ${cart
           ))}
         </div>
       </main>
+
       <Dialog open={showAddProduct || editingProduct !== null} onOpenChange={(open) => {
         if (!open) {
           setShowAddProduct(false);
@@ -972,8 +1006,8 @@ ${cart
               )}
             </div>
             <div className="flex gap-2">
-              <Button 
-                onClick={editingProduct ? handleEditProduct : handleAddProduct} 
+              <Button
+                onClick={editingProduct ? handleEditProduct : handleAddProduct}
                 className="flex-1"
                 disabled={!newProduct.nameUz || !newProduct.nameRu || newProduct.price <= 0}
               >
