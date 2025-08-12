@@ -491,35 +491,53 @@ ${cart
   };
 
   const handleAddProduct = () => {
-    if (newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
-      const product: Product = {
-        id: Date.now().toString(),
-        nameUz: newProduct.nameUz,
-        nameRu: newProduct.nameRu,
-        description: newProduct.description,
-        price: newProduct.price,
-        category: newProduct.category,
-        image: newProduct.image,
-        discount: newProduct.hasDiscount ? newProduct.discount : 0,
-      };
-      setProducts([...products, product]);
-      setNewProduct({
-        nameUz: "",
-        nameRu: "",
-        description: "",
-        price: 0,
-        category: "",
-        image: "",
-        discount: 0,
-        hasDiscount: false,
-      });
-      setShowAddProduct(false);
-      toast({
-        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-        description: language === "uz" ? "Mahsulot qo'shildi va asosiy sahifada ko'rinadi" : "Товар добавлен и виден на главной странице",
-      });
-    }
-  };
+  if (newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
+    const product: Product = {
+      id: Date.now().toString(),
+      nameUz: newProduct.nameUz,
+      nameRu: newProduct.nameRu,
+      description: newProduct.description,
+      price: newProduct.price,
+      category: newProduct.category,
+      image: newProduct.image,
+      discount: newProduct.hasDiscount ? newProduct.discount : 0,
+    };
+
+    // Yangilangan ro'yxat
+    const updatedProducts = [...products, product];
+
+    // State'ni yangilash
+    setProducts(updatedProducts);
+
+    // LocalStorage'ga yozish
+    localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+    // Formani tozalash
+    setNewProduct({
+      nameUz: "",
+      nameRu: "",
+      description: "",
+      price: 0,
+      category: "",
+      image: "",
+      discount: 0,
+      hasDiscount: false,
+    });
+
+    // Qo'shish oynasini yopish
+    setShowAddProduct(false);
+
+    // Toast xabar
+    toast({
+      title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+      description:
+        language === "uz"
+          ? "Mahsulot qo'shildi va asosiy sahifada ko'rinadi"
+          : "Товар добавлен и виден на главной странице",
+    });
+  }
+};
+
 
   const handleEditProduct = () => {
     if (editingProduct && newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
