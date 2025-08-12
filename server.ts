@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-const DB_FILE = join(process.cwd(), 'data', 'db.json');
+const DB_FILE = join(process.cwd(), 'data', 'public/db/db.json');
 
 interface Product {
   id: string;
