@@ -61,11 +61,12 @@ export default function Home() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const saved = localStorage.getItem("products");
-    if (saved) {
-      setProducts(JSON.parse(saved));
-    }
-  }, []);
+  const savedProducts = localStorage.getItem("products");
+  if (savedProducts) {
+    setProducts(JSON.parse(savedProducts));
+  }
+}, []);
+
 
   const texts = {
     uz: {
@@ -289,43 +290,46 @@ ${cart
   };
 
 const handleAddProduct = () => {
-    if (newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
-      const product: Product = {
-        id: Date.now().toString(),
-        nameUz: newProduct.nameUz,
-        nameRu: newProduct.nameRu,
-        description: newProduct.description,
-        price: newProduct.price,
-        category: newProduct.category,
-        image: newProduct.image,
-        discount: newProduct.hasDiscount ? newProduct.discount : 0,
-      };
+  if (newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
+    const product: Product = {
+      id: Date.now().toString(),
+      nameUz: newProduct.nameUz,
+      nameRu: newProduct.nameRu,
+      description: newProduct.description,
+      price: newProduct.price,
+      category: newProduct.category,
+      image: newProduct.image,
+      discount: newProduct.hasDiscount ? newProduct.discount : 0,
+    };
 
-      const updatedProducts = [...products, product];
-      setProducts(updatedProducts);
+    const updatedProducts = [...products, product];
+    setProducts(updatedProducts);
 
-      // LocalStorage ga yozish
-      localStorage.setItem("products", JSON.stringify(updatedProducts));
+    // ✅ LocalStorage ga yozish
+    localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-      // Forma bo'shatish
-      setNewProduct({
-        nameUz: "",
-        nameRu: "",
-        description: "",
-        price: 0,
-        category: "",
-        image: "",
-        discount: 0,
-        hasDiscount: false,
-      });
+    setNewProduct({
+      nameUz: "",
+      nameRu: "",
+      description: "",
+      price: 0,
+      category: "",
+      image: "",
+      discount: 0,
+      hasDiscount: false,
+    });
 
-      alert(
+    setShowAddProduct(false);
+
+    toast({
+      title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+      description:
         language === "uz"
-          ? "Mahsulot qo'shildi va saqlandi!"
-          : "Товар добавлен и сохранён!"
-      );
-    }
-  };
+          ? "Mahsulot qo'shildi va saqlandi"
+          : "Товар добавлен и сохранён",
+    });
+  }
+};
 
 
   const handleEditProduct = () => {
