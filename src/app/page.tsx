@@ -20,7 +20,6 @@ interface Product {
   image?: string;
   category: string;
   discount?: number;
-  description?: string; // Add this line
 }
 
 interface CartItem {
@@ -57,37 +56,218 @@ export default function Home() {
     discount: 0,
     hasDiscount: false,
   });
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [products, setProducts] = useState<Product[]>([
+    {
+      id: "1",
+      nameUz: "Hotdog 5 tasi 1 da",
+      nameRu: "Хотдог 5 штук 1 шт",
+      price: 25000,
+      category: "Hotdog",
+      discount: 0,
+    },
+    {
+      id: "2",
+      nameUz: "Hotdog 5 tasi 1 da (Big)",
+      nameRu: "Хотдог 5 штук 1 шт (Большой)",
+      price: 35000,
+      category: "Hotdog",
+      discount: 0,
+    },
+    {
+      id: "3",
+      nameUz: "Gamburger 5 tasi 1 da",
+      nameRu: "Гамбургер 5 штук 1 шт",
+      price: 30000,
+      category: "Burger",
+      discount: 0,
+    },
+    {
+      id: "4",
+      nameUz: "Chicken Burger 5 tasi 1 da",
+      nameRu: "Чикен Бургер 5 штук 1 шт",
+      price: 32000,
+      category: "Burger",
+      discount: 0,
+    },
+    {
+      id: "5",
+      nameUz: "Gamburger",
+      nameRu: "Гамбургер",
+      price: 25000,
+      category: "Burger",
+      discount: 10,
+    },
+    {
+      id: "6",
+      nameUz: "DablBurger",
+      nameRu: "ДаблБургер",
+      price: 35000,
+      category: "Burger",
+      discount: 0,
+    },
+    {
+      id: "7",
+      nameUz: "Chizburger",
+      nameRu: "Чизбургер",
+      price: 28000,
+      category: "Burger",
+      discount: 0,
+    },
+    {
+      id: "8",
+      nameUz: "DablChizburger",
+      nameRu: "ДаблЧизбургер",
+      price: 38000,
+      category: "Burger",
+      discount: 0,
+    },
+    {
+      id: "9",
+      nameUz: "ChickenDog 5 tasi 1 da",
+      nameRu: "ЧикенДог 5 штук 1 шт",
+      price: 30000,
+      category: "Hotdog",
+      discount: 0,
+    },
+    {
+      id: "10",
+      nameUz: "Hot-Dog",
+      nameRu: "Хот-Дог",
+      price: 20000,
+      category: "Hotdog",
+      discount: 0,
+    },
+    {
+      id: "11",
+      nameUz: "Hot-Dog (big)",
+      nameRu: "Хот-Дог (большой)",
+      price: 28000,
+      category: "Hotdog",
+      discount: 0,
+    },
+    {
+      id: "12",
+      nameUz: "Kartoshka Fri",
+      nameRu: "Картошка Фри",
+      price: 15000,
+      category: "Side",
+      discount: 0,
+    },
+    {
+      id: "13",
+      nameUz: "Coca Cola 0.5",
+      nameRu: "Кока Кола 0.5",
+      price: 8000,
+      category: "Drink",
+      discount: 0,
+    },
+    {
+      id: "14",
+      nameUz: "ChickenBurger",
+      nameRu: "ЧикенБургер",
+      price: 26000,
+      category: "Burger",
+      discount: 0,
+    },
+    {
+      id: "15",
+      nameUz: "IceCoffee",
+      nameRu: "АйсКофе",
+      price: 12000,
+      category: "Drink",
+      discount: 0,
+    },
+    {
+      id: "16",
+      nameUz: "Klab Sendwich",
+      nameRu: "Клаб Сэндвич",
+      price: 30000,
+      category: "Sandwich",
+      discount: 0,
+    },
+    {
+      id: "17",
+      nameUz: "Klab Sendwich Fri bilan",
+      nameRu: "Клаб Сэндвич с Фри",
+      price: 35000,
+      category: "Combo",
+      discount: 0,
+    },
+    {
+      id: "18",
+      nameUz: "Fri va Cola",
+      nameRu: "Фри и Кола",
+      price: 20000,
+      category: "Combo",
+      discount: 0,
+    },
+    {
+      id: "19",
+      nameUz: "Naggets 4",
+      nameRu: "Наггетсы 4",
+      price: 18000,
+      category: "Chicken",
+      discount: 0,
+    },
+    {
+      id: "20",
+      nameUz: "Naggets 8",
+      nameRu: "Наггетсы 8",
+      price: 32000,
+      category: "Chicken",
+      discount: 0,
+    },
+    {
+      id: "21",
+      nameUz: "Strips",
+      nameRu: "Стрипсы",
+      price: 25000,
+      category: "Chicken",
+      discount: 0,
+    },
+    {
+      id: "22",
+      nameUz: "Moxito Classic",
+      nameRu: "Мохито Классик",
+      price: 15000,
+      category: "Drink",
+      discount: 0,
+    },
+    {
+      id: "23",
+      nameUz: "Combo 2",
+      nameRu: "Комбо 2",
+      price: 45000,
+      category: "Combo",
+      discount: 0,
+    },
+    {
+      id: "24",
+      nameUz: "Chizburger set 4",
+      nameRu: "Чизбургер сет 4",
+      price: 95000,
+      category: "Combo",
+      discount: 0,
+    },
+    {
+      id: "25",
+      nameUz: "Gigant Hot-Dog",
+      nameRu: "Гигант Хот-Дог",
+      price: 40000,
+      category: "Hotdog",
+      discount: 0,
+    },
+    {
+      id: "26",
+      nameUz: "Ice-Tea",
+      nameRu: "Айс-Ти",
+      price: 10000,
+      category: "Drink",
+      discount: 0,
+    },
+  ]);
 
   const { toast } = useToast();
-
-  // Fetch products from the backend API
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/products");
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
-        }
-        const data: Product[] = await response.json();
-        setProducts(data);
-      } catch (err) {
-        setError(language === "uz" ? "Mahsulotlarni yuklashda xatolik" : "Ошибка при загрузке товаров");
-        toast({
-          title: language === "uz" ? "Xatolik" : "Ошибка",
-          description: language === "uz" ? "Mahsulotlarni yuklashda xatolik" : "Ошибка при загрузке товаров",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
 
   const texts = {
     uz: {
@@ -120,7 +300,6 @@ export default function Home() {
       cancel: "Bekor qilish",
       edit: "Tahrirlash",
       delete: "O'chirish",
-      loading: "Yuklanmoqda...",
       categories: {
         Hotdog: "Hotdog",
         Burger: "Burger",
@@ -161,7 +340,6 @@ export default function Home() {
       cancel: "Отмена",
       edit: "Редактировать",
       delete: "Удалить",
-      loading: "Загрузка...",
       categories: {
         Hotdog: "Хотдог",
         Burger: "Бургер",
@@ -231,6 +409,7 @@ export default function Home() {
     }
 
     try {
+      // Send message to Telegram
       const telegramMessage = `🍔 YANGI BUYURTMA!
 📞 Telefon: ${orderData.customerPhone || "Ko'rsatilmagan"}
 💰 To'lov usuli: ${orderData.paymentMethod}
@@ -259,6 +438,7 @@ ${cart
         minute: "2-digit",
       })}`;
 
+      // Send to Telegram group
       await fetch(
         `https://api.telegram.org/bot8410799225:AAEkdfVuxr56XGUiqoTesMBW6lrcGIA2rOY/sendMessage`,
         {
@@ -280,6 +460,7 @@ ${cart
         description: t.orderSuccess,
       });
 
+      // Reset order placed status after 5 seconds
       setTimeout(() => setIsOrderPlaced(false), 5000);
     } catch (error) {
       toast({
@@ -309,10 +490,10 @@ ${cart
     }
   };
 
-  const handleAddProduct = async () => {
+  const handleAddProduct = () => {
     if (newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
       const product: Product = {
-        id: Date.now().toString(), // Note: Backend should generate ID
+        id: Date.now().toString(),
         nameUz: newProduct.nameUz,
         nameRu: newProduct.nameRu,
         description: newProduct.description,
@@ -321,48 +502,26 @@ ${cart
         image: newProduct.image,
         discount: newProduct.hasDiscount ? newProduct.discount : 0,
       };
-
-      try {
-        const response = await fetch("/api/products", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(product),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to add product");
-        }
-
-        const savedProduct: Product = await response.json();
-        setProducts([...products, savedProduct]);
-        setNewProduct({
-          nameUz: "",
-          nameRu: "",
-          description: "",
-          price: 0,
-          category: "",
-          image: "",
-          discount: 0,
-          hasDiscount: false,
-        });
-        setShowAddProduct(false);
-        toast({
-          title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-          description: language === "uz" ? "Mahsulot qo'shildi" : "Товар добавлен",
-        });
-      } catch (error) {
-        toast({
-          title: language === "uz" ? "Xatolik" : "Ошибка",
-          description: language === "uz" ? "Mahsulot qo'shilmadi" : "Товар не добавлен",
-          variant: "destructive",
-        });
-      }
+      setProducts([...products, product]);
+      setNewProduct({
+        nameUz: "",
+        nameRu: "",
+        description: "",
+        price: 0,
+        category: "",
+        image: "",
+        discount: 0,
+        hasDiscount: false,
+      });
+      setShowAddProduct(false);
+      toast({
+        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+        description: language === "uz" ? "Mahsulot qo'shildi va asosiy sahifada ko'rinadi" : "Товар добавлен и виден на главной странице",
+      });
     }
   };
 
-  const handleEditProduct = async () => {
+  const handleEditProduct = () => {
     if (editingProduct && newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
       const updatedProduct: Product = {
         ...editingProduct,
@@ -374,68 +533,32 @@ ${cart
         image: newProduct.image,
         discount: newProduct.hasDiscount ? newProduct.discount : 0,
       };
-
-      try {
-        const response = await fetch(`/api/products/${editingProduct.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedProduct),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to update product");
-        }
-
-        setProducts(products.map((p) => (p.id === editingProduct.id ? updatedProduct : p)));
-        setEditingProduct(null);
-        setNewProduct({
-          nameUz: "",
-          nameRu: "",
-          description: "",
-          price: 0,
-          category: "",
-          image: "",
-          discount: 0,
-          hasDiscount: false,
-        });
-        toast({
-          title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-          description: language === "uz" ? "Mahsulot yangilandi" : "Товар обновлен",
-        });
-      } catch (error) {
-        toast({
-          title: language === "uz" ? "Xatolik" : "Ошибка",
-          description: language === "uz" ? "Mahsulot yangilanmadi" : "Товар не обновлен",
-          variant: "destructive",
-        });
-      }
+      
+      setProducts(products.map(p => p.id === editingProduct.id ? updatedProduct : p));
+      setEditingProduct(null);
+      setNewProduct({
+        nameUz: "",
+        nameRu: "",
+        description: "",
+        price: 0,
+        category: "",
+        image: "",
+        discount: 0,
+        hasDiscount: false,
+      });
+      toast({
+        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+        description: language === "uz" ? "Mahsulot yangilandi" : "Товар обновлен",
+      });
     }
   };
 
-  const handleDeleteProduct = async (productId: string) => {
-    try {
-      const response = await fetch(`/api/products/${productId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete product");
-      }
-
-      setProducts(products.filter((p) => p.id !== productId));
-      toast({
-        title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-        description: language === "uz" ? "Mahsulot o'chirildi" : "Товар удален",
-      });
-    } catch (error) {
-      toast({
-        title: language === "uz" ? "Xatolik" : "Ошибка",
-        description: language === "uz" ? "Mahsulot o'chirilmadi" : "Товар не удален",
-        variant: "destructive",
-      });
-    }
+  const handleDeleteProduct = (productId: string) => {
+    setProducts(products.filter((p) => p.id !== productId));
+    toast({
+      title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
+      description: language === "uz" ? "Mahsulot o'chirildi" : "Товар удален",
+    });
   };
 
   const groupedProducts = products.reduce((acc, product) => {
@@ -445,22 +568,6 @@ ${cart
     acc[product.category].push(product);
     return acc;
   }, {} as Record<string, Product[]>);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-red-50">
-        <p className="text-lg font-medium text-gray-600">{t.loading}</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-red-50">
-        <p className="text-lg font-medium text-red-600">{error}</p>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
@@ -477,6 +584,7 @@ ${cart
               <h1 className="text-3xl font-bold text-orange-600">{t.title}</h1>
             </div>
             <div className="flex items-center gap-4">
+              {/* Cart Button */}
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="outline" size="sm" className="relative">
@@ -505,7 +613,7 @@ ${cart
                             const discountedPrice = item.product.discount
                               ? item.product.price * (1 - item.product.discount / 100)
                               : item.product.price;
-
+                            
                             return (
                               <div key={item.product.id} className="flex items-center justify-between p-3 border rounded-lg">
                                 <div className="flex-1">
@@ -513,16 +621,16 @@ ${cart
                                     {language === "uz" ? item.product.nameUz : item.product.nameRu}
                                   </h4>
                                   <div className="flex items-center gap-2">
-                                    {item.product.discount !== undefined && item.product.discount > 0 && (
-                                    <>
-                                      <span className="text-sm text-gray-500 line-through">
-                                        {item.product.price.toLocaleString()} so'm
-                                      </span>
-                                      <Badge variant="destructive" className="text-xs">
-                                        -{item.product.discount}%
-                                      </Badge>
-                                    </>
-                                  )}
+                                    {item.product.discount > 0 && (
+                                      <>
+                                        <span className="text-sm text-gray-500 line-through">
+                                          {item.product.price.toLocaleString()} so'm
+                                        </span>
+                                        <Badge variant="destructive" className="text-xs">
+                                          -{item.product.discount}%
+                                        </Badge>
+                                      </>
+                                    )}
                                     <span className="font-bold text-orange-600">
                                       {discountedPrice.toLocaleString()} so'm
                                     </span>
@@ -549,6 +657,8 @@ ${cart
                           })}
                         </div>
                         <Separator />
+                        
+                        {/* Order Details */}
                         <div className="space-y-4">
                           <div>
                             <Label className="text-base font-medium">
@@ -567,6 +677,7 @@ ${cart
                               type="tel"
                             />
                           </div>
+
                           <div>
                             <Label className="text-base font-medium">
                               {t.deliveryAddress}
@@ -582,6 +693,7 @@ ${cart
                               className="mt-1"
                             />
                           </div>
+
                           <div>
                             <Label className="text-base font-medium">
                               {t.paymentMethod}
@@ -609,6 +721,7 @@ ${cart
                             )}
                           </div>
                         </div>
+
                         <Separator />
                         <div className="flex items-center justify-between font-bold text-lg">
                           <span>{t.totalPrice}</span>
@@ -616,7 +729,7 @@ ${cart
                             {getTotalPrice().toLocaleString()} so'm
                           </span>
                         </div>
-                        <Button
+                        <Button 
                           onClick={handlePlaceOrder}
                           disabled={cart.length === 0 || isOrderPlaced}
                           className="w-full mt-4"
@@ -634,6 +747,7 @@ ${cart
                   </div>
                 </DialogContent>
               </Dialog>
+
               <div className="flex bg-gray-100 rounded-full p-1">
                 <button
                   onClick={() => setLanguage("uz")}
@@ -728,12 +842,11 @@ ${cart
                                 <span className="text-sm font-medium">
                                   {product.price.toLocaleString()} so'm
                                 </span>
-                                {(product.discount ?? 0) > 0 && (
-                                <Badge variant="destructive" className="text-xs">
-                                  -{product.discount ?? 0}%
-                                </Badge>
-                              )}
-
+                                {product.discount > 0 && (
+                                  <Badge variant="destructive" className="text-xs">
+                                    -{product.discount}%
+                                  </Badge>
+                                )}
                               </div>
                               <div className="text-xs text-gray-500">
                                 {t.categories[product.category as keyof typeof t.categories] || product.category}
@@ -779,7 +892,9 @@ ${cart
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        {/* Product Catalog */}
         <div className="space-y-8">
           {Object.entries(groupedProducts).map(([category, categoryProducts]) => (
             <div key={category}>
@@ -825,17 +940,16 @@ ${cart
                           </p>
                         )}
                         <div className="flex items-center gap-2 mb-4">
-                         {(product.discount ?? 0) > 0 && (
+                          {product.discount > 0 && (
                             <>
                               <span className="text-sm text-gray-500 line-through">
                                 {product.price.toLocaleString()} so'm
                               </span>
                               <Badge variant="destructive" className="text-xs">
-                                -{product.discount ?? 0}%
+                                -{product.discount}%
                               </Badge>
                             </>
                           )}
-
                           <span className="text-lg font-bold text-orange-600">
                             {discountedPrice.toLocaleString()} so'm
                           </span>
@@ -867,6 +981,7 @@ ${cart
         </div>
       </main>
 
+      {/* Add/Edit Product Dialog */}
       <Dialog open={showAddProduct || editingProduct !== null} onOpenChange={(open) => {
         if (!open) {
           setShowAddProduct(false);
@@ -912,6 +1027,7 @@ ${cart
                 />
               </div>
             </div>
+
             <div>
               <Label htmlFor="description">{language === "uz" ? "Mahsulot tavsifi" : "Описание товара"}</Label>
               <Input
@@ -923,6 +1039,7 @@ ${cart
                 placeholder={language === "uz" ? "Mahsulot haqida qisqacha ma'lumot" : "Краткое описание товара"}
               />
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="price">{t.productPrice}</Label>
@@ -953,6 +1070,7 @@ ${cart
                 />
               </div>
             </div>
+
             <div>
               <Label htmlFor="image">{language === "uz" ? "Rasm URL" : "URL изображения"}</Label>
               <Input
@@ -964,6 +1082,7 @@ ${cart
                 placeholder={language === "uz" ? "Rasm havolasi (ixtiyoriy)" : "URL изображения (необязательно)"}
               />
             </div>
+
             <div>
               <Label>{t.hasDiscount}</Label>
               <RadioGroup
@@ -1005,9 +1124,10 @@ ${cart
                 </div>
               )}
             </div>
+
             <div className="flex gap-2">
-              <Button
-                onClick={editingProduct ? handleEditProduct : handleAddProduct}
+              <Button 
+                onClick={editingProduct ? handleEditProduct : handleAddProduct} 
                 className="flex-1"
                 disabled={!newProduct.nameUz || !newProduct.nameRu || newProduct.price <= 0}
               >
