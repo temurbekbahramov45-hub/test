@@ -56,218 +56,16 @@ export default function Home() {
     discount: 0,
     hasDiscount: false,
   });
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: "1",
-      nameUz: "Hotdog 5 tasi 1 da",
-      nameRu: "Хотдог 5 штук 1 шт",
-      price: 25000,
-      category: "Hotdog",
-      discount: 0,
-    },
-    {
-      id: "2",
-      nameUz: "Hotdog 5 tasi 1 da (Big)",
-      nameRu: "Хотдог 5 штук 1 шт (Большой)",
-      price: 35000,
-      category: "Hotdog",
-      discount: 0,
-    },
-    {
-      id: "3",
-      nameUz: "Gamburger 5 tasi 1 da",
-      nameRu: "Гамбургер 5 штук 1 шт",
-      price: 30000,
-      category: "Burger",
-      discount: 0,
-    },
-    {
-      id: "4",
-      nameUz: "Chicken Burger 5 tasi 1 da",
-      nameRu: "Чикен Бургер 5 штук 1 шт",
-      price: 32000,
-      category: "Burger",
-      discount: 0,
-    },
-    {
-      id: "5",
-      nameUz: "Gamburger",
-      nameRu: "Гамбургер",
-      price: 25000,
-      category: "Burger",
-      discount: 10,
-    },
-    {
-      id: "6",
-      nameUz: "DablBurger",
-      nameRu: "ДаблБургер",
-      price: 35000,
-      category: "Burger",
-      discount: 0,
-    },
-    {
-      id: "7",
-      nameUz: "Chizburger",
-      nameRu: "Чизбургер",
-      price: 28000,
-      category: "Burger",
-      discount: 0,
-    },
-    {
-      id: "8",
-      nameUz: "DablChizburger",
-      nameRu: "ДаблЧизбургер",
-      price: 38000,
-      category: "Burger",
-      discount: 0,
-    },
-    {
-      id: "9",
-      nameUz: "ChickenDog 5 tasi 1 da",
-      nameRu: "ЧикенДог 5 штук 1 шт",
-      price: 30000,
-      category: "Hotdog",
-      discount: 0,
-    },
-    {
-      id: "10",
-      nameUz: "Hot-Dog",
-      nameRu: "Хот-Дог",
-      price: 20000,
-      category: "Hotdog",
-      discount: 0,
-    },
-    {
-      id: "11",
-      nameUz: "Hot-Dog (big)",
-      nameRu: "Хот-Дог (большой)",
-      price: 28000,
-      category: "Hotdog",
-      discount: 0,
-    },
-    {
-      id: "12",
-      nameUz: "Kartoshka Fri",
-      nameRu: "Картошка Фри",
-      price: 15000,
-      category: "Side",
-      discount: 0,
-    },
-    {
-      id: "13",
-      nameUz: "Coca Cola 0.5",
-      nameRu: "Кока Кола 0.5",
-      price: 8000,
-      category: "Drink",
-      discount: 0,
-    },
-    {
-      id: "14",
-      nameUz: "ChickenBurger",
-      nameRu: "ЧикенБургер",
-      price: 26000,
-      category: "Burger",
-      discount: 0,
-    },
-    {
-      id: "15",
-      nameUz: "IceCoffee",
-      nameRu: "АйсКофе",
-      price: 12000,
-      category: "Drink",
-      discount: 0,
-    },
-    {
-      id: "16",
-      nameUz: "Klab Sendwich",
-      nameRu: "Клаб Сэндвич",
-      price: 30000,
-      category: "Sandwich",
-      discount: 0,
-    },
-    {
-      id: "17",
-      nameUz: "Klab Sendwich Fri bilan",
-      nameRu: "Клаб Сэндвич с Фри",
-      price: 35000,
-      category: "Combo",
-      discount: 0,
-    },
-    {
-      id: "18",
-      nameUz: "Fri va Cola",
-      nameRu: "Фри и Кола",
-      price: 20000,
-      category: "Combo",
-      discount: 0,
-    },
-    {
-      id: "19",
-      nameUz: "Naggets 4",
-      nameRu: "Наггетсы 4",
-      price: 18000,
-      category: "Chicken",
-      discount: 0,
-    },
-    {
-      id: "20",
-      nameUz: "Naggets 8",
-      nameRu: "Наггетсы 8",
-      price: 32000,
-      category: "Chicken",
-      discount: 0,
-    },
-    {
-      id: "21",
-      nameUz: "Strips",
-      nameRu: "Стрипсы",
-      price: 25000,
-      category: "Chicken",
-      discount: 0,
-    },
-    {
-      id: "22",
-      nameUz: "Moxito Classic",
-      nameRu: "Мохито Классик",
-      price: 15000,
-      category: "Drink",
-      discount: 0,
-    },
-    {
-      id: "23",
-      nameUz: "Combo 2",
-      nameRu: "Комбо 2",
-      price: 45000,
-      category: "Combo",
-      discount: 0,
-    },
-    {
-      id: "24",
-      nameUz: "Chizburger set 4",
-      nameRu: "Чизбургер сет 4",
-      price: 95000,
-      category: "Combo",
-      discount: 0,
-    },
-    {
-      id: "25",
-      nameUz: "Gigant Hot-Dog",
-      nameRu: "Гигант Хот-Дог",
-      price: 40000,
-      category: "Hotdog",
-      discount: 0,
-    },
-    {
-      id: "26",
-      nameUz: "Ice-Tea",
-      nameRu: "Айс-Ти",
-      price: 10000,
-      category: "Drink",
-      discount: 0,
-    },
-  ]);
-
+  
+  const [products, setProducts] = useState<Product[]>([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const saved = localStorage.getItem("products");
+    if (saved) {
+      setProducts(JSON.parse(saved));
+    }
+  }, []);
 
   const texts = {
     uz: {
@@ -490,53 +288,44 @@ ${cart
     }
   };
 
-  const handleAddProduct = () => {
-  if (newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
-    const product: Product = {
-      id: Date.now().toString(),
-      nameUz: newProduct.nameUz,
-      nameRu: newProduct.nameRu,
-      description: newProduct.description,
-      price: newProduct.price,
-      category: newProduct.category,
-      image: newProduct.image,
-      discount: newProduct.hasDiscount ? newProduct.discount : 0,
-    };
+const handleAddProduct = () => {
+    if (newProduct.nameUz && newProduct.nameRu && newProduct.price > 0) {
+      const product: Product = {
+        id: Date.now().toString(),
+        nameUz: newProduct.nameUz,
+        nameRu: newProduct.nameRu,
+        description: newProduct.description,
+        price: newProduct.price,
+        category: newProduct.category,
+        image: newProduct.image,
+        discount: newProduct.hasDiscount ? newProduct.discount : 0,
+      };
 
-    // Yangilangan ro'yxat
-    const updatedProducts = [...products, product];
+      const updatedProducts = [...products, product];
+      setProducts(updatedProducts);
 
-    // State'ni yangilash
-    setProducts(updatedProducts);
+      // LocalStorage ga yozish
+      localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-    // LocalStorage'ga yozish
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
+      // Forma bo'shatish
+      setNewProduct({
+        nameUz: "",
+        nameRu: "",
+        description: "",
+        price: 0,
+        category: "",
+        image: "",
+        discount: 0,
+        hasDiscount: false,
+      });
 
-    // Formani tozalash
-    setNewProduct({
-      nameUz: "",
-      nameRu: "",
-      description: "",
-      price: 0,
-      category: "",
-      image: "",
-      discount: 0,
-      hasDiscount: false,
-    });
-
-    // Qo'shish oynasini yopish
-    setShowAddProduct(false);
-
-    // Toast xabar
-    toast({
-      title: language === "uz" ? "Muvaffaqiyatli" : "Успешно",
-      description:
+      alert(
         language === "uz"
-          ? "Mahsulot qo'shildi va asosiy sahifada ko'rinadi"
-          : "Товар добавлен и виден на главной странице",
-    });
-  }
-};
+          ? "Mahsulot qo'shildi va saqlandi!"
+          : "Товар добавлен и сохранён!"
+      );
+    }
+  };
 
 
   const handleEditProduct = () => {
